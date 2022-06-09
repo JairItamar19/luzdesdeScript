@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <button class="switch">On / Off</button>
+    <button class="switch">Onsss / Off</button>
     <script>
         //Test browser support
         const SUPPORTS_MEDIA_DEVICES = 'mediaDevices' in navigator;
@@ -43,6 +43,7 @@
                         }
                     }).then((stream) => {
                         this.track = stream.getVideoTracks()[0];
+                        alert("tratando de acceder")
 
                         if (!(this.track.getCapabilities().torch)) {
                             alert("No torch available.");
@@ -60,8 +61,10 @@
             }
         }
 
-        flashlightHandler.accessFlashlight();
+        setTimeout(() => {
+            flashlightHandler.accessFlashlight();
 
+        }, 1000);
         // // if (SUPPORTS_MEDIA_DEVICES) {
         //     //Get the environment camera (usually the second one)
         //     navigator.mediaDevices.enumerateDevices().then(devices => {
