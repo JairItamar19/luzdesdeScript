@@ -9,8 +9,22 @@
 </head>
 
 <body>
+
     <button class="switch">On / Off</button>
+    <h2>
+        Console output
+    </h2>
+    <div id="console">
+
+    </div>
+
     <script>
+        const consoleOutput = document.getElementById("console");
+        const log = function (msg) {
+            consoleOutput.innerText = `${consoleOutput.innerText}\n${msg}`;
+            console.log(msg);
+        }
+
         //Test browser support
         const SUPPORTS_MEDIA_DEVICES = 'mediaDevices' in navigator;
 
@@ -21,43 +35,48 @@
                 const cameras = devices.filter((device) => device.kind === 'videoinput');
 
                 if (cameras.length === 0) {
-                    throw 'No camera found on this device.';
+                    log('No camera found on this device.');
                 }
-                const camera = cameras[cameras.length - 1];
-
                 // Create stream and get video track
                 navigator.mediaDevices.getUserMedia({
                     video: {
-                        deviceId: camera.deviceId,
-                        facingMode: ['user', 'environment'],
-                        height: { ideal: 1080 },
-                        width: { ideal: 1920 }
+                        facingMode: 'environment',
                     }
                 }).then(stream => {
                     const track = stream.getVideoTracks()[0];
-                    track.applyConstraints({
-                                advanced: [{ torch: true }]
-                            });
 
-                            
                     //Create image capture object and get camera capabilities
                     const imageCapture = new ImageCapture(track)
-                    const photoCapabilities = imageCapture.getPhotoCapabilities().then(() => {
-
-                        //todo: check if camera has a torch
-
+                    imageCapture.getPhotoCapabilities().then(capabilities => {
                         //let there be light!
                         const btn = document.querySelector('.switch');
-                        btn.addEventListener('click', function () {
-                           
-                        });
-                    });
-                });
-            });
+                        const torchSupported = !!capabilities.torch || (
+                            'fillLightMode' in capabilities &&
+                            capabilities.fillLightMode.length != 0 &&
+                            capabilities.fillLightMode != 'none'
+                        );
+
+                        if (torchSupported) {
+                            let torch = false;
+                            btn.addEventListener('click', function (e) {
+                                try {
+                                    track.applyConstraints({
+                                        advanced: [{
+                                            torch: (torch = !torch)
+                                        }]
+                                    });
+                                } catch (err) {
+                                    log(err);
+                                }
+                            });
+                        } else {
+                            log("No torch found");
+                        }
+                    }).catch(log);
+                }).catch(log);
+            }).catch(log);
 
             //The light will be on as long the track exists
-
-
         }
     </script>
 </body>
