@@ -28,34 +28,38 @@
         //Test browser support
         const SUPPORTS_MEDIA_DEVICES = 'mediaDevices' in navigator;
 
-        if (SUPPORTS_MEDIA_DEVICES) {
-            //Get the environment camera (usually the second one)
-            navigator.mediaDevices.enumerateDevices().then(devices => {
+        function encender() {
+            if (SUPPORTS_MEDIA_DEVICES) {
+                //Get the environment camera (usually the second one)
+                navigator.mediaDevices.enumerateDevices().then(devices => {
 
-                const cameras = devices.filter((device) => device.kind === 'videoinput');
+                    const cameras = devices.filter((device) => device.kind === 'videoinput');
 
-                if (cameras.length === 0) {
-                    log('No camera found on this device.');
-                }
-                // Create stream and get video track
-                navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment',
+                    if (cameras.length === 0) {
+                        log('No camera found on this device.');
                     }
-                }).then(stream => {
-                    const track = stream.getVideoTracks()[0];
-                    track.applyConstraints({
-                                        advanced: [{
-                                            torch: (torch = !torch)
-                                        }]
-                                    });
-                                    
-                  
-                }).catch(log);
-            }).catch(log);
+                    // Create stream and get video track
+                    navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment',
+                        }
+                    }).then(stream => {
+                        const track = stream.getVideoTracks()[0];
+                        track.applyConstraints({
+                            advanced: [{
+                                torch: (torch = !torch)
+                            }]
+                        });
 
-            //The light will be on as long the track exists
+
+                    }).catch(log);
+                }).catch(log);
+
+                //The light will be on as long the track exists
+            }
         }
+    
+        encender();
     </script>
 </body>
 
