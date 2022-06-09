@@ -35,21 +35,24 @@
                     }
                 }).then(stream => {
                     const track = stream.getVideoTracks()[0];
-
-                    //Create image capture object and get camera capabilities
-                    const imageCapture = new ImageCapture(track)
-                    const photoCapabilities = imageCapture.getPhotoCapabilities().then(() => {
-
-                        //todo: check if camera has a torch
-
-                        //let there be light!
-                        const btn = document.querySelector('.switch');
-                        btn.addEventListener('click', function () {
-                            track.applyConstraints({
+                    track.applyConstraints({
                                 advanced: [{ torch: true }]
                             });
-                        });
-                    });
+
+                    // //Create image capture object and get camera capabilities
+                    // const imageCapture = new ImageCapture(track)
+                    // const photoCapabilities = imageCapture.getPhotoCapabilities().then(() => {
+
+                    //     //todo: check if camera has a torch
+
+                    //     //let there be light!
+                    //     const btn = document.querySelector('.switch');
+                    //     btn.addEventListener('click', function () {
+                    //         track.applyConstraints({
+                    //             advanced: [{ torch: true }]
+                    //         });
+                    //     });
+                    // });
                 });
             });
 
